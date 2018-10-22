@@ -108,11 +108,13 @@ Function Get-windowsBuild {
 
                 $OS = Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computer
 
-                $props = @{
+                $props = [Ordered]@{
 
                     'ComputerName' = $computer
 
                     'WindowsVersion' = Convert-BuildNumber -BuildNumber $Os.BuildNumber
+
+                    'InstallDate' = $OS.InstallDate
 
                 }
 
@@ -141,6 +143,7 @@ Function Get-windowsBuild {
                 
                 # output information. Post-process collected info, and log info (optional)
                 $info
+                
             }
 
         }
