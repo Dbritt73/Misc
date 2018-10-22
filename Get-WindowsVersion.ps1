@@ -143,7 +143,7 @@ Function Get-windowsBuild {
                 
                 # output information. Post-process collected info, and log info (optional)
                 $info
-                
+
             }
 
         }
@@ -151,4 +151,5 @@ Function Get-windowsBuild {
     }
 
     End {}
+    
 }
