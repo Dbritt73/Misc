@@ -27,7 +27,6 @@ $bytes = @"
 $logo = [System.Convert]::FromBase64String($bytes)
 Set-Content -Path "$env:TEMP\logo.png" -Value $logo -Encoding Byte
 
-
 [XML]$Form = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         Title="Front Desk Notification" Height="450" Width="800">
