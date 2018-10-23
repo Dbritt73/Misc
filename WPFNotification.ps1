@@ -11,8 +11,6 @@
     *Use Case - Specific scenario this was created for was to provide a notification window for student employee's at a
     front desk that has a frequent change in shifts.
 
-    *the encoded logo string modified to not show 
-
 #>
 
 [cmdletbinding()]
@@ -22,7 +20,7 @@ Add-Type -AssemblyName PresentationFramework
 
 #[convert]::ToBase64String((Get-Content .\logo.png -Encoding byte))
 $bytes = @"
-Base64 encoded string content from image - paste here to remove need to external reosurces.
+    Base64 encoded string content from image - paste here to remove need to external resources.
 "@
 
 #Convert base64 encoded string back to image, create image file in users temp folder
