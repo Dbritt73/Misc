@@ -54,6 +54,7 @@ Function Convert-BuildNumber {
         }
 
         $result
+        
     }
 
     End {}
