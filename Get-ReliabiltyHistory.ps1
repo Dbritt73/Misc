@@ -24,7 +24,8 @@ function Get-ReliabiltyHistory {
     Param (
 
         # Param1 help description
-        [Parameter( Mandatory=$true,HelpMessage='Add help message for user',
+        [Parameter( Mandatory=$true,
+                    HelpMessage='Add help message for user',
                     ValueFromPipelineByPropertyName=$true,
                     ValueFromPipeline= $true,
                     Position=0)]
@@ -69,12 +70,13 @@ function Get-ReliabiltyHistory {
                     $Object = New-Object -TypeName psobject -Property $props
                     $Object.PSObject.TypeNames.Insert(0,'Report.ReliabilityRecords')
                     Write-Output -InputObject $Object
+                    
                 }
 
             }
 
         } Catch {
-            
+
             # get error record
             [Management.Automation.ErrorRecord]$e = $_
 
