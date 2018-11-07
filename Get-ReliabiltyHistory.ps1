@@ -24,7 +24,7 @@ function Get-ReliabiltyHistory {
     Param (
 
         # Param1 help description
-        [Parameter( Mandatory=$true,
+        [Parameter( Mandatory=$true,HelpMessage='Add help message for user',
                     ValueFromPipelineByPropertyName=$true,
                     ValueFromPipeline= $true,
                     Position=0)]
@@ -42,8 +42,10 @@ function Get-ReliabiltyHistory {
 
                 $WMI = @{
 
-                    'Class' = 'Win32_ReliabilityRecords';
-                    'ComputerName' = $computer;
+                    'Class' = 'Win32_ReliabilityRecords'
+
+                    'ComputerName' = $computer
+
                     'ErrorAction' = 'Stop'
 
                 }
@@ -54,9 +56,12 @@ function Get-ReliabiltyHistory {
 
                     $Props = [Ordered]@{
                     
-                        'ComputerName' = $computer;
-                        'Product' = $R.ProductName;
-                        'TimeGenerated' = $R.TimeGenerated;
+                        'ComputerName' = $computer
+
+                        'Product' = $R.ProductName
+
+                        'TimeGenerated' = $R.TimeGenerated
+
                         'Message' = $R.Message
     
                     }
@@ -68,7 +73,26 @@ function Get-ReliabiltyHistory {
 
             }
 
-        } Catch {}
+        } Catch {
+            
+            # get error record
+            [Management.Automation.ErrorRecord]$e = $_
+
+            # retrieve information about runtime error
+            $info = [PSCustomObject]@{
+
+                Exception = $e.Exception.Message
+                Reason    = $e.CategoryInfo.Reason
+                Target    = $e.CategoryInfo.TargetName
+                Script    = $e.InvocationInfo.ScriptName
+                Line      = $e.InvocationInfo.ScriptLineNumber
+                Column    = $e.InvocationInfo.OffsetInLine
+
+            }
+            
+            # output information. Post-process collected info, and log info (optional)
+            $info
+        }
 
     }
 
