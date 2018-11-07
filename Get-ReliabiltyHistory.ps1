@@ -21,14 +21,15 @@ function Get-ReliabiltyHistory {
     #>
     [CmdletBinding()]
 
-    Param
-    (
+    Param (
+
         # Param1 help description
         [Parameter( Mandatory=$true,
                     ValueFromPipelineByPropertyName=$true,
                     ValueFromPipeline= $true,
                     Position=0)]
-        [String[]]$ComputerName = 'localhost'
+        [String[]]$ComputerName
+
     )
 
     Begin {}
@@ -42,12 +43,29 @@ function Get-ReliabiltyHistory {
                 $WMI = @{
 
                     'Class' = 'Win32_ReliabilityRecords';
-                    'ComputerName' = $computer
+                    'ComputerName' = $computer;
+                    'ErrorAction' = 'Stop'
 
                 }
 
-                Get-CimInstance @WMI | Select-Object Computername, message, @{n="TimeGenerated";e={$_.ConvertToDateTime($_.timegenerated)}}
+                $RH = Get-CimInstance @WMI
+
+                foreach ($R in $RH) {
+
+                    $Props = [Ordered]@{
                     
+                        'ComputerName' = $computer;
+                        'Product' = $R.ProductName;
+                        'TimeGenerated' = $R.TimeGenerated;
+                        'Message' = $R.Message
+    
+                    }
+    
+                    $Object = New-Object -TypeName psobject -Property $props
+                    $Object.PSObject.TypeNames.Insert(0,'Report.ReliabilityRecords')
+                    Write-Output -InputObject $Object
+                }
+
             }
 
         } Catch {}
