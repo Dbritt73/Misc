@@ -8,8 +8,6 @@ Function Get-PowerPlan {
 
         Try {
 
-            $Currentconfig = $(& "$env:windir\system32\powercfg.exe" -getactivescheme).Split()[3]
-
             $wmi = @{
 
                 'NameSpace' = 'root\cimv2\power'
@@ -20,7 +18,7 @@ Function Get-PowerPlan {
 
             }
 
-            $PowerPlan = Get-CimInstance @wmi | Where-object {$_.InstanceID -like "*$Currentconfig*"}
+            $PowerPlan = Get-CimInstance @wmi | Where-object {$_.IsActive -eq 'True'}
 
                     $Props = [ordered]@{
 
