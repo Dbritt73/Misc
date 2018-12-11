@@ -14,15 +14,15 @@ Function Get-Software  {
       .EXAMPLE
       Get-Software -ComputerName 'SERVER01'
       Example of querying a single remote machine
-      
+
       .EXAMPLE
       Get-Software -ComputerName 'SERVER01', 'SERVER02', 'SERVER03'
       Example of querying a multiple remote machine
-      
+
       .EXAMPLE
       'SERVER01', 'SERVER02', 'SERVER03' | Get-Software
       Example of querying a multiple remote machines using the pipeline
-      
+
       .EXAMPLE
       (Get-Content -path .\computers.txt) | Get-Software
       Example of querying a multiple remote machine names from file contents using the pipeline
