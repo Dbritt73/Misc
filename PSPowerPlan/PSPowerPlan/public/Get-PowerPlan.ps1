@@ -1,44 +1,54 @@
 Function Get-PowerPlan {
     [CmdletBinding()]
-    Param ()
+    Param (
+
+        [string[]]$ComputerName
+
+    )
 
     Begin {}
 
     Process {
 
-        Try {
+        foreach ($computer in $ComputerName) {
 
-            $wmi = @{
+            Try {
 
-                'NameSpace' = 'root\cimv2\power'
+                $wmi = @{
 
-                'ClassName' = 'Win32_PowerPlan'
+                    'ComputerName' = $Computer
 
-                'ErrorAction' = 'Stop'
+                    'NameSpace' = 'root\cimv2\power'
 
-            }
+                    'ClassName' = 'Win32_PowerPlan'
 
-            $PowerPlan = Get-CimInstance @wmi | Where-object {$_.IsActive -eq 'True'}
+                    'ErrorAction' = 'Stop'
 
-                    $Props = [ordered]@{
+                }
 
-                        'ComputerName' = $ENV:COMPUTERNAME
+                $PowerPlan = Get-CimInstance @wmi | Where-object {$_.IsActive -eq 'True'}
 
-                        'PowerPlan' = $PowerPlan.ElementName
+                        $Props = [ordered]@{
 
-                        'Description' = $PowerPlan.Description
+                            'ComputerName' = $Computer
 
-                        'ID' = ($PowerPlan.InstanceID).Split('\')[1]
+                            'PowerPlan' = $PowerPlan.ElementName
 
-                        'IsActive' = $PowerPlan.IsActive
+                            'Description' = $PowerPlan.Description
 
-                    }
+                            'ID' = ($PowerPlan.InstanceID).Split('\')[1]
 
-                    $obj = new-object -TypeName Psobject -Property $Props
+                            'IsActive' = $PowerPlan.IsActive
 
-                    Write-output -InputObject $obj
+                        }
 
-        } Catch {}
+                        $obj = new-object -TypeName Psobject -Property $Props
+
+                        Write-output -InputObject $obj
+
+            } Catch {}
+
+        }
 
     }
 
