@@ -14,15 +14,15 @@ Function Get-Software  {
       .EXAMPLE
       Get-Software -ComputerName 'SERVER01'
       Example of querying a single remote machine
-      
+
       .EXAMPLE
       Get-Software -ComputerName 'SERVER01', 'SERVER02', 'SERVER03'
       Example of querying a multiple remote machine
-      
+
       .EXAMPLE
       'SERVER01', 'SERVER02', 'SERVER03' | Get-Software
       Example of querying a multiple remote machines using the pipeline
-      
+
       .EXAMPLE
       (Get-Content -path .\computers.txt) | Get-Software
       Example of querying a multiple remote machine names from file contents using the pipeline
@@ -40,60 +40,60 @@ Function Get-Software  {
       .OUTPUTS
       Custom object of type Software.Inventory.Report
   #>
-  
-    [cmdletbinding()] 
+
+    [cmdletbinding()]
     param(
 
      [parameter(ValueFromPipeline=$true,
-                ValueFromPipelineByPropertyName=$true)] 
+                ValueFromPipelineByPropertyName=$true)]
      [string[]]$ComputerName = $env:computername
 
-    ) 
- 
-    Begin { 
+    )
 
-     $UninstallRegKeys=@('SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall', 
-                        'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall') 
+    Begin {
 
-    } 
- 
-    Process { 
+     $UninstallRegKeys=@('SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall',
+                        'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall')
 
-        foreach($Computer in $ComputerName) { 
+    }
 
-            Write-Verbose -Message "Working on $Computer" 
-            if(Test-Connection -ComputerName $Computer -Count 1 -ea 0) { 
+    Process {
 
-                foreach($UninstallRegKey in $UninstallRegKeys) { 
+        foreach($Computer in $ComputerName) {
 
-                    try { 
+            Write-Verbose -Message "Working on $Computer"
+            if(Test-Connection -ComputerName $Computer -Count 1 -ea 0) {
 
-                        $HKLM   = [microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$computer) 
-                        $UninstallRef  = $HKLM.OpenSubKey($UninstallRegKey) 
-                        $Applications = $UninstallRef.GetSubKeyNames() 
+                foreach($UninstallRegKey in $UninstallRegKeys) {
 
-                    } catch { 
+                    try {
 
-                        Write-Verbose -Message "Failed to read $UninstallRegKey on $computer" 
+                        $HKLM   = [microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$computer)
+                        $UninstallRef  = $HKLM.OpenSubKey($UninstallRegKey)
+                        $Applications = $UninstallRef.GetSubKeyNames()
+
+                    } catch {
+
+                        Write-Verbose -Message "Failed to read $UninstallRegKey on $computer"
                         Continue
 
-                    } 
-    
+                    }
+
                     foreach ($App in $Applications) {
 
-                        $AppRegistryKey  = $UninstallRegKey + '\\' + $App 
-                        $AppDetails   = $HKLM.OpenSubKey($AppRegistryKey) 
+                        $AppRegistryKey  = $UninstallRegKey + '\\' + $App
+                        $AppDetails   = $HKLM.OpenSubKey($AppRegistryKey)
                         $AppGUID   = $App 
 
-                        if($UninstallRegKey -match 'Wow6432Node') { 
+                        if($UninstallRegKey -match 'Wow6432Node') {
 
-                            $Softwarearchitecture = 'x86' 
+                            $Softwarearchitecture = 'x86'
 
-                        } else { 
+                        } else {
 
                             $Softwarearchitecture = 'x64'
-                             
-                        } 
+
+                        }
 
                         if( ! $($AppDetails.GetValue('DisplayName')) ) { continue } 
 
@@ -116,20 +116,20 @@ Function Get-Software  {
                             'SoftwareArch' = $Softwarearchitecture
 
                         }
-                    
+
                         $Obj = New-Object -TypeName PSObject -Property $ObjProps
                         $Obj.psobject.typenames.insert(0, 'Software.Inventory.Report')
                         Write-output -InputObject $Obj
 
-                    } 
+                    }
 
-                }   
+                }
 
-            } 
+            }
 
-        } 
+        }
 
-    } 
+    }
 
     End {}
 

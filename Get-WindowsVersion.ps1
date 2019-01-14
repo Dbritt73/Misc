@@ -47,13 +47,14 @@ Function Convert-BuildNumber {
             14393 {$result = 'Microsoft Windows 10 Build 1607'}
             15063 {$result = 'Microsoft Windows 10 Build 1703'}
             16299 {$result = 'Microsoft Windows 10 Build 1709'}
-            17133 {$result = 'Microsoft Windows 10 Build 1803'}
+            17134 {$result = 'Microsoft Windows 10 Build 1803'}
             17763 {$result = 'Microsoft Windows 10 Build 1809'}
             'Default' {$result = 'Unknown'}
 
         }
 
         $result
+        
     }
 
     End {}

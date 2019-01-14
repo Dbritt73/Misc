@@ -21,14 +21,16 @@ function Get-ReliabiltyHistory {
     #>
     [CmdletBinding()]
 
-    Param
-    (
+    Param (
+
         # Param1 help description
         [Parameter( Mandatory=$true,
+                    HelpMessage='Add help message for user',
                     ValueFromPipelineByPropertyName=$true,
                     ValueFromPipeline= $true,
                     Position=0)]
-        [String[]]$ComputerName = 'localhost'
+        [String[]]$ComputerName
+
     )
 
     Begin {}
@@ -41,16 +43,58 @@ function Get-ReliabiltyHistory {
 
                 $WMI = @{
 
-                    'Class' = 'Win32_ReliabilityRecords';
+                    'Class' = 'Win32_ReliabilityRecords'
+
                     'ComputerName' = $computer
+
+                    'ErrorAction' = 'Stop'
 
                 }
 
-                Get-CimInstance @WMI | Select-Object Computername, message, @{n="TimeGenerated";e={$_.ConvertToDateTime($_.timegenerated)}}
+                $RH = Get-CimInstance @WMI
+
+                foreach ($R in $RH) {
+
+                    $Props = [Ordered]@{
                     
+                        'ComputerName' = $computer
+
+                        'Product' = $R.ProductName
+
+                        'TimeGenerated' = $R.TimeGenerated
+
+                        'Message' = $R.Message
+    
+                    }
+    
+                    $Object = New-Object -TypeName psobject -Property $props
+                    $Object.PSObject.TypeNames.Insert(0,'Report.ReliabilityRecords')
+                    Write-Output -InputObject $Object
+                    
+                }
+
             }
 
-        } Catch {}
+        } Catch {
+
+            # get error record
+            [Management.Automation.ErrorRecord]$e = $_
+
+            # retrieve information about runtime error
+            $info = [PSCustomObject]@{
+
+                Exception = $e.Exception.Message
+                Reason    = $e.CategoryInfo.Reason
+                Target    = $e.CategoryInfo.TargetName
+                Script    = $e.InvocationInfo.ScriptName
+                Line      = $e.InvocationInfo.ScriptLineNumber
+                Column    = $e.InvocationInfo.OffsetInLine
+
+            }
+            
+            # output information. Post-process collected info, and log info (optional)
+            $info
+        }
 
     }
 

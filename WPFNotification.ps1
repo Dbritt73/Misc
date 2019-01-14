@@ -30,6 +30,7 @@ Set-Content -Path "$env:TEMP\logo.png" -Value $logo -Encoding Byte
 [XML]$Form = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         Title="Front Desk Notification" Height="450" Width="800">
+        WindowStartupLocation="CenterScreen"
     <Grid>
         <TextBox Name="DontForget" HorizontalAlignment="Left" Height="39" Margin="47,32,0,0" TextWrapping="Wrap" Text="Don't forget to:&#xD;&#xA;&#xD;&#xA;" VerticalAlignment="Top" Width="196" TextDecorations="Underline" FontWeight="Bold" BorderThickness="0" FontSize="24"/>
         <TextBox HorizontalAlignment="Left" Height="239" Margin="47,85,0,0" TextWrapping="Wrap" Text="&#xD;&#xA;  &#x25CF; BLAH&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;  &#x25CF; BLAH&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;  &#x25CF; BLAH" VerticalAlignment="Top" Width="524" FontSize="20" BorderThickness="0"/>
