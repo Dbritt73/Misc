@@ -42,59 +42,71 @@ Function Convert-BuildNumber {
         Switch ($BuildNumber) {
 
             9600  {$result = 'Microsoft Windows 8.1'}
-            10240 {$result = 'Microsoft Windows 10 Build 1507'}
-            10586 {$result = 'Microsoft Windows 10 Build 1511'}
-            14393 {$result = 'Microsoft Windows 10 Build 1607'}
-            15063 {$result = 'Microsoft Windows 10 Build 1703'}
-            16299 {$result = 'Microsoft Windows 10 Build 1709'}
-            17134 {$result = 'Microsoft Windows 10 Build 1803'}
-            17763 {$result = 'Microsoft Windows 10 Build 1809'}
+
+            10240 {$result = 'Microsoft Windows 10 1507'}
+
+            10586 {$result = 'Microsoft Windows 10 1511'}
+
+            14393 {$result = 'Microsoft Windows 10 1607'}
+
+            15063 {$result = 'Microsoft Windows 10 1703'}
+
+            16299 {$result = 'Microsoft Windows 10 1709'}
+
+            17134 {$result = 'Microsoft Windows 10 1803'}
+
+            17763 {$result = 'Microsoft Windows 10 1809'}
+
             'Default' {$result = 'Unknown'}
 
         }
 
         $result
-        
+
     }
 
     End {}
 }
 
 Function Get-windowsBuild {
-  <#
-      .SYNOPSIS
-      Describe purpose of "Get-windowsBuild" in 1-2 sentences.
+    <#
+        .SYNOPSIS
+        Retrieves information on the version/build of Windows
 
-      .DESCRIPTION
-      Add a more complete description of what the function does.
+        .DESCRIPTION
+        Get-Windows build utilizes CIM commands to retrieve information on the version of Windows installed on the computer.
+        Works on Windows 8.1 and higher.
 
-      .PARAMETER ComputerName
-      Describe parameter -ComputerName.
+        .PARAMETER ComputerName
+        Name of computer(s) to query the Windows version
 
-      .EXAMPLE
-      Get-windowsBuild -ComputerName Value
-      Describe what this call does
+        .EXAMPLE
+        Get-windowsBuild -ComputerName 'localhost'
 
-      .NOTES
-      Place additional notes here.
+        ComputerName WindowsVersion            WindowsBuild InstallDate
+        ------------ --------------            ------------ -----------
+        localhost    Microsoft Windows 10 1809 17763        10/3/2018 2:54:35 PM
 
-      .LINK
-      URLs to related sites
-      The first link is opened by Get-Help -Online Get-windowsBuild
+        .NOTES
+        Place additional notes here.
 
-      .INPUTS
-      List of input types that are accepted by this function.
+        .LINK
+        URLs to related sites
+        The first link is opened by Get-Help -Online Get-windowsBuild
 
-      .OUTPUTS
-      List of output types produced by this function.
-  #>
+        .INPUTS
+        [string[]]
+
+        .OUTPUTS
+        Report.WindowsVersion
+    #>
 
 
     [cmdletBinding()]
     Param (
 
-        [Parameter( ValueFromPipeline,
-                    ValueFromPipelineByPropertyName)]
+        [Parameter( ValueFromPipeline = $true,
+                    ValueFromPipelineByPropertyName = $true)]
         [string[]]$ComputerName
 
     )
@@ -107,7 +119,17 @@ Function Get-windowsBuild {
 
             Try {
 
-                $OS = Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $computer
+                $splat = @{
+
+                    'ClassName' = 'Win32_OperatingSystem'
+
+                    'ComputerName' = $Computer
+
+                    'ErrorAction' = 'Stop'
+
+                }
+
+                $OS = Get-CimInstance @Splat
 
                 $props = [Ordered]@{
 
@@ -115,12 +137,14 @@ Function Get-windowsBuild {
 
                     'WindowsVersion' = Convert-BuildNumber -BuildNumber $Os.BuildNumber
 
+                    'WindowsBuild' = $OS.BuildNumber
+
                     'InstallDate' = $OS.InstallDate
 
                 }
 
                 $obj = New-object -TypeName psobject -Property $props
-                $Obj.PSObject.TypeNames.Insert(0,'System.WindowsVersion')
+                $Obj.PSObject.TypeNames.Insert(0,'Report.WindowsVersion')
                 Write-Output -InputObject $Obj
 
             } Catch {
@@ -141,7 +165,7 @@ Function Get-windowsBuild {
                     Column       = $e.InvocationInfo.OffsetInLine
 
                 }
-                
+
                 # output information. Post-process collected info, and log info (optional)
                 $info
 
@@ -152,5 +176,5 @@ Function Get-windowsBuild {
     }
 
     End {}
-    
+
 }

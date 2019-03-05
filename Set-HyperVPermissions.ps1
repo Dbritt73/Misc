@@ -1,7 +1,9 @@
 Function Set-HyperVPermissions {
     [CmdletBinding()]
     Param (
+
         [String[]]$ComputerName
+
     )
 
     Begin {}
