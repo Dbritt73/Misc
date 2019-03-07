@@ -32,7 +32,7 @@ Function Get-Software  {
 
       .LINK
       Original script code found here:
-      http://techibee.com/powershell/powershell-script-to-query-softwares-installed-on-remote-computer/1389 
+      http://techibee.com/powershell/powershell-script-to-query-softwares-installed-on-remote-computer/1389
 
       .INPUTS
       String or an array of strings that represent computer names
@@ -64,38 +64,38 @@ Function Get-Software  {
             Write-Verbose -Message "Working on $Computer"
             if(Test-Connection -ComputerName $Computer -Count 1 -ea 0) {
 
-                foreach($UninstallRegKey in $UninstallRegKeys) {
+                Foreach($UninstallRegKey in $UninstallRegKeys) {
 
-                    try {
+                    Try {
 
                         $HKLM   = [microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$computer)
                         $UninstallRef  = $HKLM.OpenSubKey($UninstallRegKey)
                         $Applications = $UninstallRef.GetSubKeyNames()
 
-                    } catch {
+                    } Catch {
 
                         Write-Verbose -Message "Failed to read $UninstallRegKey on $computer"
                         Continue
 
                     }
 
-                    foreach ($App in $Applications) {
+                    Foreach ($App in $Applications) {
 
                         $AppRegistryKey  = $UninstallRegKey + '\\' + $App
                         $AppDetails   = $HKLM.OpenSubKey($AppRegistryKey)
-                        $AppGUID   = $App 
+                        $AppGUID   = $App
 
-                        if($UninstallRegKey -match 'Wow6432Node') {
+                        If($UninstallRegKey -match 'Wow6432Node') {
 
                             $Softwarearchitecture = 'x86'
 
-                        } else {
+                        } Else {
 
                             $Softwarearchitecture = 'x64'
 
                         }
 
-                        if( ! $($AppDetails.GetValue('DisplayName')) ) { continue } 
+                        If ( ! $($AppDetails.GetValue('DisplayName')) ) { continue }
 
                         $Objprops = [ordered]@{
 
