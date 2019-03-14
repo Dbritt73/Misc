@@ -4,23 +4,23 @@ Function Send-WakeOnLAN {
     <#
     .SYNOPSIS
     Send a Wake-On-LAN packet to wake a sleeping computer
-    
+
     .DESCRIPTION
     Send-WakeOnLAN takes the supplied hardware MAC address and converts into a properly formatted byte value and sends
     to the target IP address via the native UDP Client in Windows. Able to specify the port in which to connect to the
-    target as well. 
-    
+    target as well.
+
     .EXAMPLE
     Send-WakeOnLAN -IP '192.168.2.3' -MAC '00:11:32:21:2D:11'
 
     .EXAMPLE
     Send-WakeOnLAN -IP '192.168.2.3' -MAC '00:11:32:21:2D:11' -Port 9
-    
+
     .NOTES
-    *Initial purpose was to copy this script to a remote computer that lives on the same subnet of the desired target 
-    computer, Enter-PSSession to this 'jump box' and run against actual target. This was to bypass the need to have IP 
+    *Initial purpose was to copy this script to a remote computer that lives on the same subnet of the desired target
+    computer, Enter-PSSession to this 'jump box' and run against actual target. This was to bypass the need to have IP
     helpers when running from a computer on a different subnet.
-    
+
     *Original Code from : https://www.pdq.com/blog/wake-on-lan-wol-magic-packet-powershell/
     #>
 
@@ -42,7 +42,7 @@ Function Send-WakeOnLAN {
         [int]$Port = 7
 
     )
-       
+
     Begin {}
 
     Process {
@@ -74,7 +74,7 @@ Function Send-WakeOnLAN {
         } Catch {
 
             Write-Warning -Message "$Error[0].Message"
-        
+
         }
 
     }
