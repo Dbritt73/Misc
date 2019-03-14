@@ -7,14 +7,14 @@ Function Send-WakeOnLAN {
 
     .DESCRIPTION
     Send-WakeOnLAN takes the supplied hardware MAC address and converts into a properly formatted byte value and sends
-    to the target IP address via the native UDP Client in Windows. Able to specify the port in which to connect to the
+    to the target via the native UDP Client in Windows. Able to specify the port in which to connect to the
     target as well.
 
     .EXAMPLE
-    Send-WakeOnLAN -IP '192.168.2.3' -MAC '00:11:32:21:2D:11'
+    Send-WakeOnLAN -MAC '00:11:32:21:2D:11'
 
     .EXAMPLE
-    Send-WakeOnLAN -IP '192.168.2.3' -MAC '00:11:32:21:2D:11' -Port 9
+    Send-WakeOnLAN -MAC '00:11:32:21:2D:11' -Port 9
 
     .NOTES
     *Initial purpose was to copy this script to a remote computer that lives on the same subnet of the desired target
@@ -26,11 +26,6 @@ Function Send-WakeOnLAN {
 
     [CmdletBinding()]
     Param (
-
-        [Parameter( Position = 0,
-                    Mandatory=$true,
-                    HelpMessage="IP Address of the target endpoint")]
-        [String]$IP,
 
         [Parameter( Position = 1,
                     Mandatory=$true,
@@ -71,11 +66,9 @@ Function Send-WakeOnLAN {
             Write-Verbose -Message "Closing local UDP client"
             $UDP.Close()
 
-        } Catch {
+            Write-Output -InputObject "Magic packet sent to $MAC"
 
-            Write-Warning -Message "$Error[0].Message"
-
-        }
+        } Catch {}
 
     }
 
