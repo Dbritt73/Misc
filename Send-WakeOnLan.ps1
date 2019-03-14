@@ -63,7 +63,7 @@ Function Send-WakeOnLAN {
             $UDP = New-Object System.Net.Sockets.UdpClient
 
             Write-Verbose -Message "Attempt connection to target network adapter"
-            $UDP.Connect(([ipaddress]::Broadcast),$Port)
+            $UDP.Connect(([System.Net.IPAddress]::Broadcast),$Port)
 
             Write-Verbose -Message "Broadcasting Wake-On-LAN packet to target node"
             $UDP.Send($MagicPacket, $MagicPacket.Length) | Out-Null
