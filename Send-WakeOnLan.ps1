@@ -27,15 +27,15 @@ Function Send-WakeOnLAN {
     [CmdletBinding()]
     Param (
 
-        [Parameter( Position = 0, 
+        [Parameter( Position = 0,
                     Mandatory=$true,
                     HelpMessage="IP Address of the target endpoint")]
-        [String]$IP, 
+        [String]$IP,
 
-        [Parameter( Position = 1, 
+        [Parameter( Position = 1,
                     Mandatory=$true,
                     HelpMessage="Hardware address for the network adapter of target endpoint")]
-        [String]$MAC, 
+        [String]$MAC,
 
         [Parameter( Position = 2,
                     HelpMessage="Port for UDP client to connect to, default is port 7")]
