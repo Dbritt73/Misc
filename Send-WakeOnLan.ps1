@@ -27,13 +27,12 @@ Function Send-WakeOnLAN {
     [CmdletBinding()]
     Param (
 
-        [Parameter( Position = 1,
+        [Parameter( Position = 0,
                     Mandatory=$true,
-                    HelpMessage="Hardware address for the network adapter of target endpoint")]
+                    HelpMessage='Hardware address for the network adapter of target endpoint')]
         [String]$MAC,
 
-        [Parameter( Position = 2,
-                    HelpMessage="Port for UDP client to connect to, default is port 7")]
+        [Parameter( Position = 1)]
         [int]$Port = 7
 
     )
@@ -45,25 +44,25 @@ Function Send-WakeOnLAN {
         Try {
 
             Write-Verbose -Message "Converting MAC address $MAC to the proper format of the Byte type"
-            $ByteArray = $MAC -split "[:-]" | ForEach-Object {
+            $ByteArray = $MAC -split '[:-]' | ForEach-Object {
 
                 [Byte]"0x$_"
 
             }
 
-            Write-Verbose -Message "Creating the Wake-On-LAN packet to send"
+            Write-Verbose -Message 'Creating the Wake-On-LAN packet to send'
             [Byte[]]$MagicPacket = (,0xFF * 6) + ($ByteArray * 16)
 
-            Write-Verbose -Message "Initializing the native UDP Client"
-            $UDP = New-Object System.Net.Sockets.UdpClient
+            Write-Verbose -Message 'Initializing the native UDP Client'
+            $UDP = New-Object -TypeName System.Net.Sockets.UdpClient
 
-            Write-Verbose -Message "Attempt connection to target network adapter"
+            Write-Verbose -Message 'Attempt connection to target network adapter'
             $UDP.Connect(([System.Net.IPAddress]::Broadcast),$Port)
 
-            Write-Verbose -Message "Broadcasting Wake-On-LAN packet to target node"
+            Write-Verbose -Message 'Broadcasting Wake-On-LAN packet to target node'
             $UDP.Send($MagicPacket, $MagicPacket.Length) | Out-Null
 
-            Write-Verbose -Message "Closing local UDP client"
+            Write-Verbose -Message 'Closing local UDP client'
             $UDP.Close()
 
             Write-Output -InputObject "Magic packet sent to $MAC"
