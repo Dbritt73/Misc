@@ -121,11 +121,9 @@ Function Get-windowsBuild {
 
                 $splat = @{
 
-                    'ClassName' = 'Win32_OperatingSystem'
-
+                    'ClassName'    = 'Win32_OperatingSystem'
                     'ComputerName' = $Computer
-
-                    'ErrorAction' = 'Stop'
+                    'ErrorAction'  = 'Stop'
 
                 }
 
@@ -133,13 +131,10 @@ Function Get-windowsBuild {
 
                 $props = [Ordered]@{
 
-                    'ComputerName' = $computer
-
+                    'ComputerName'   = $computer
                     'WindowsVersion' = Convert-BuildNumber -BuildNumber $Os.BuildNumber
-
-                    'WindowsBuild' = $OS.BuildNumber
-
-                    'InstallDate' = $OS.InstallDate
+                    'WindowsBuild'   = $OS.BuildNumber
+                    'InstallDate'    = $OS.InstallDate
 
                 }
 
@@ -167,7 +162,7 @@ Function Get-windowsBuild {
                 }
 
                 # output information. Post-process collected info, and log info (optional)
-                $info
+                Write-Output -InputObject $info
 
             }
 

@@ -51,8 +51,8 @@ Function Get-TypeAccelerators {
     Process {
 
         [PSObject].Assembly.GetType('System.Management.Automation.TypeAccelerators')::Get.GetEnumerator() |
-            Select-Object -Property @{Name='Accelerator'; Expression={$_.Key}},@{name='TypeName'; Expression={$_.Value}} |
-                Sort-Object -Property Accelerator
+          Select-Object -Property @{Name='Accelerator'; Expression={$_.Key}},@{name='TypeName'; Expression={$_.Value}} |
+            Sort-Object -Property Accelerator
 
     }
 

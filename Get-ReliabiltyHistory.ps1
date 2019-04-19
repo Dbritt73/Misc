@@ -43,11 +43,9 @@ function Get-ReliabiltyHistory {
 
                 $WMI = @{
 
-                    'Class' = 'Win32_ReliabilityRecords'
-
+                    'Class'        = 'Win32_ReliabilityRecords'
                     'ComputerName' = $computer
-
-                    'ErrorAction' = 'Stop'
+                    'ErrorAction'  = 'Stop'
 
                 }
 
@@ -56,21 +54,18 @@ function Get-ReliabiltyHistory {
                 foreach ($R in $RH) {
 
                     $Props = [Ordered]@{
-                    
-                        'ComputerName' = $computer
 
-                        'Product' = $R.ProductName
-
+                        'ComputerName'  = $computer
+                        'Product'       = $R.ProductName
                         'TimeGenerated' = $R.TimeGenerated
+                        'Message'       = $R.Message
 
-                        'Message' = $R.Message
-    
                     }
-    
+
                     $Object = New-Object -TypeName psobject -Property $props
                     $Object.PSObject.TypeNames.Insert(0,'Report.ReliabilityRecords')
                     Write-Output -InputObject $Object
-                    
+
                 }
 
             }
@@ -91,9 +86,10 @@ function Get-ReliabiltyHistory {
                 Column    = $e.InvocationInfo.OffsetInLine
 
             }
-            
+
             # output information. Post-process collected info, and log info (optional)
-            $info
+            Write-Output -InputObject $info
+
         }
 
     }

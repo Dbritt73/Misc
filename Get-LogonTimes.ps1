@@ -30,7 +30,9 @@ Function Get-LogonTimes {
 
     [CmdletBinding()]
     Param (
+
         [string[]]$ComputerName
+
     )
 
     Begin {}
@@ -38,34 +40,37 @@ Function Get-LogonTimes {
     Process {
 
         Foreach ($Computer in $ComputerName) {
-            
+
             Try {
-                
+
                 $CimSession = New-CimSession -ComputerName $Computer
                 $LogonSession = Get-CimInstance -ClassName 'Win32_LogonSession' -CimSession $CimSession
 
                 foreach ($Session in $LogonSession) {
 
-                    $user = Get-CimAssociatedInstance -InputObject $Session -ResultClassName 'Win32_Account' -CimSession $CimSession
+                    $Splat = @{
+
+                        'InputObject'     = $Session
+                        'ResultClassName' = 'Win32_Account'
+                        'CimSession'      = $CimSession
+
+                    }
+
+                    $user = Get-CimAssociatedInstance @Splat
 
                     $Props = [ordered]@{
 
                         'ComputerName' = $Computer
-
-                        'Name' = $user.Fullname
-
-                        'UserId' = $user.Name
-
-                        'Domain' = $user.Domain
-
+                        'Name'         = $user.Fullname
+                        'UserId'       = $user.Name
+                        'Domain'       = $user.Domain
                         'LocalAccount' = $user.LocalAccount
-
-                        'LogonTime' = $Session.StartTime
+                        'LogonTime'    = $Session.StartTime
 
                     }
 
                     New-Object -TypeName PSobject -Property $props
-                    
+
                 }
 
                 Remove-CimSession -CimSession $CimSession
@@ -78,17 +83,17 @@ Function Get-LogonTimes {
                 # retrieve information about runtime error
                 $info = [PSCustomObject]@{
 
-                  Exception = $e.Exception.Message
-                  Reason    = $e.CategoryInfo.Reason
-                  Target    = $e.CategoryInfo.TargetName
-                  Script    = $e.InvocationInfo.ScriptName
-                  Line      = $e.InvocationInfo.ScriptLineNumber
-                  Column    = $e.InvocationInfo.OffsetInLine
+                    Exception = $e.Exception.Message
+                    Reason    = $e.CategoryInfo.Reason
+                    Target    = $e.CategoryInfo.TargetName
+                    Script    = $e.InvocationInfo.ScriptName
+                    Line      = $e.InvocationInfo.ScriptLineNumber
+                    Column    = $e.InvocationInfo.OffsetInLine
 
                 }
-                
+
                 # output information. Post-process collected info, and log info (optional)
-                $info
+                Write-Output -InputObject $info
 
             }
 

@@ -68,9 +68,9 @@ Function Get-Software  {
 
                     Try {
 
-                        $HKLM   = [microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$computer)
+                        $HKLM          = [microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$computer)
                         $UninstallRef  = $HKLM.OpenSubKey($UninstallRegKey)
-                        $Applications = $UninstallRef.GetSubKeyNames()
+                        $Applications  = $UninstallRef.GetSubKeyNames()
 
                     } Catch {
 
@@ -82,8 +82,8 @@ Function Get-Software  {
                     Foreach ($App in $Applications) {
 
                         $AppRegistryKey  = $UninstallRegKey + '\\' + $App
-                        $AppDetails   = $HKLM.OpenSubKey($AppRegistryKey)
-                        $AppGUID   = $App
+                        $AppDetails      = $HKLM.OpenSubKey($AppRegistryKey)
+                        $AppGUID         = $App
 
                         If($UninstallRegKey -match 'Wow6432Node') {
 
@@ -100,25 +100,18 @@ Function Get-Software  {
                         $Objprops = [ordered]@{
 
                             'ComputerName' = $Computer
-
-                            'AppName' =  $($AppDetails.GetValue('DisplayName'))
-
-                            'AppVersion' = $($AppDetails.GetValue('DisplayVersion'))
-
-                            'AppVendor' = $($AppDetails.GetValue('Publisher'))
-
-                            'InstallDate' = $($AppDetails.GetValue('InstallDate'))
-
+                            'AppName'      = $($AppDetails.GetValue('DisplayName'))
+                            'AppVersion'   = $($AppDetails.GetValue('DisplayVersion'))
+                            'AppVendor'    = $($AppDetails.GetValue('Publisher'))
+                            'InstallDate'  = $($AppDetails.GetValue('InstallDate'))
                             'UninstallKey' = $($AppDetails.GetValue('UninstallString'))
-
-                            'AppGUID' = $AppGUID
-
+                            'AppGUID'      = $AppGUID
                             'SoftwareArch' = $Softwarearchitecture
 
                         }
 
                         $Obj = New-Object -TypeName PSObject -Property $ObjProps
-                        $Obj.psobject.typenames.insert(0, 'Software.Inventory.Report')
+                        $Obj.psobject.typenames.insert(0, 'Report.Software.Inventory')
                         Write-output -InputObject $Obj
 
                     }

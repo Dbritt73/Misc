@@ -35,7 +35,7 @@ Function Get-LogonStatus {
                 }
 
                 $user = Get-CimInstance @wmi
-                
+
 
             } Catch {
 
@@ -51,7 +51,7 @@ Function Get-LogonStatus {
                 $LogonStatusObj = New-Object -TypeName psobject -Property $LogonStatus
                 $LogonStatusObj.PSObject.TypeNames.Insert(0,'LogonStatus.Object')
                 Write-Output $LogonStatusObj
-                Return 
+                Return
 
             }
 
@@ -107,8 +107,8 @@ Function Get-LogonStatus {
                     $LogonStatusObj.PSObject.TypeNames.Insert(0,'LogonStatus.Object')
                     Write-Output $LogonStatusObj
 
-                } 
-                
+                }
+
             }
 
         }

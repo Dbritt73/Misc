@@ -21,14 +21,14 @@ Function Invoke-DigitalSignUpdate {
     .EXAMPLE
     Invoke-DigitalSignUpdate -ComputerName 'SERVER01' -SourceDir 'C:\temp' -DestinationDir 'C:\users\user01\Desktop\Project'
 
-    Creates a PSSession to 'SERVER01' - Stops the running PowerPoint process - copies files from the SourceDir to the 
+    Creates a PSSession to 'SERVER01' - Stops the running PowerPoint process - copies files from the SourceDir to the
     DestianationDir - Starts the updated PowerPoint presentation
 
     .NOTES
     * PsExec required to run - sysinternals
     * The (-i) parameter allows GUI applications to run in current logged on user session at remote machine
     * Would like to find another solution with the password setup
-    * Intended to be converted to .exe and run by end user with no prompting. 
+    * Intended to be converted to .exe and run by end user with no prompting.
   #>
 
 
@@ -58,7 +58,7 @@ Function Invoke-DigitalSignUpdate {
     }
 
     Process {
-        
+
         Try {
 
             Write-Verbose -Message "Stop running PowerPoint process on $ComputerName"
@@ -101,12 +101,12 @@ Function Invoke-DigitalSignUpdate {
 
                 Write-verbose -Message "Fetching PSExec to execute remote commands - location $env:windir\system32\"
                 Invoke-WebRequest -Uri 'https://live.sysinternals.com/psexec.exe' -OutFile "$env:windir\system32\psexec.exe" -ErrorAction 'Stop'
-                
+
                 Write-Verbose -Message "Starting PowerPoint Presentation as $UserName"
                 & "$env:windir\system32\psexec.exe" "\\$ComputerName" -i -u "$ComputerName\UserName" -p 'P@$$Word!!' Powershell.exe "Start-process '$PathString'"
 
             }
-            
+
         } Catch {
 
             # get error record
@@ -115,19 +115,19 @@ Function Invoke-DigitalSignUpdate {
             # retrieve information about runtime error
             $info = [PSCustomObject]@{
 
-            Date      = (Get-Date)
-            Exception = $e.Exception.Message
-            Reason    = $e.CategoryInfo.Reason
-            Target    = $e.CategoryInfo.TargetName
-            Script    = $e.InvocationInfo.ScriptName
-            Line      = $e.InvocationInfo.ScriptLineNumber
-            Column    = $e.InvocationInfo.OffsetInLine
+                Date      = (Get-Date)
+                Exception = $e.Exception.Message
+                Reason    = $e.CategoryInfo.Reason
+                Target    = $e.CategoryInfo.TargetName
+                Script    = $e.InvocationInfo.ScriptName
+                Line      = $e.InvocationInfo.ScriptLineNumber
+                Column    = $e.InvocationInfo.OffsetInLine
 
             }
-            
+
             # output information. Post-process collected info, and log info (optional)
-            $info | Out-File -FilePath "$ENV:TEMP\SignUpdate.Log"
-        
+            Write-Output -InputObject $info | Out-File -FilePath "$ENV:TEMP\SignUpdate.Log"
+
         }
 
     }

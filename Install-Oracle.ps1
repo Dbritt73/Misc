@@ -12,24 +12,57 @@
 [CmdletBinding()]
 Param ()
 
-#get current working directory (PowerShell 2.0)
-    $ScriptPath = $MyInvocation.MyCommand.Path
-    $CurrentDir = Split-Path -Path $ScriptPath
+    Begin {
 
-#Install the Oracle 11g Client
-    $Setup = "$CurrentDir\Client\Setup.exe"
-    $Arguments = "-silent -force -nowait -responseFile $CurrentDir\client\client.rsp -waitforcompletion"
-    Start-Process -FilePath $Setup -ArgumentList $Arguments -Wait
-
-#Configure Oracle for specific connections, described in the tnsnames.ora file
-    $localOracleDir = "$env:HOMEDRIVE\Oracle\Product\11.2.0.3\Client_32bit\network\admin"
-    & "$env:windir\system32\robocopy.exe" "$CurrentDir\client" "$localOracleDir" 'tnsnames.ora'
-    
-#Add System DSN Entries for ODBC Connections
-    $Connections = @('Connection1', 'Connection2', 'Connection3', 'Connection4', 'Connection15')
-
-    ForEach ($Connection in $Connections) {
-
-        Add-OdbcDsn -Name "$Connection" -DsnType 'System' -Platform '32-bit' -DriverName "Oracle in OraClient11g_home1_32bit" -SetPropertyValue "server=$Connection"
+        #get current working directory (PowerShell 2.0)
+        $ScriptPath = $MyInvocation.MyCommand.Path
+        $CurrentDir = Split-Path -Path $ScriptPath
 
     }
+
+    Process {
+
+        #Install the Oracle 11g Client
+        $ArgumentList = @(
+
+            "-silent"
+            "-force"
+            "-nowait"
+            "-responseFile $CurrentDir\client\client.rsp"
+            "-waitforcompletion"
+
+        )
+        Start-Process -FilePath "$CurrentDir\Client\Setup.exe" -ArgumentList $ArgumentList -Wait
+
+        #Configure Oracle for specific connections, described in the tnsnames.ora file
+        $ArgumentList = @(
+
+            "$CurrentDir\client"
+            "$env:HOMEDRIVE\Oracle\Product\11.2.0.3\Client_32bit\network\admin"
+            'tnsnames.ora'
+
+        )
+        Start-Process -FilePath "$env:windir\system32\robocopy.exe" -ArgumentList $ArgumentList -Wait
+
+        #Add System DSN Entries for ODBC Connections
+        $Connections = @('Connection1', 'Connection2', 'Connection3', 'Connection4', 'Connection15')
+
+        ForEach ($Connection in $Connections) {
+
+            $splat = @{
+
+                'Name'             = $Connection
+                'DsnType'          = 'System'
+                'Platform'         = '32-bit'
+                'DriverName'       = "Oracle in OraClient11g_home1_32bit"
+                'SetPropertyValue' = "server=$Connection"
+
+            }
+
+            Add-OdbcDsn @splat
+
+        }
+
+    }
+
+    End {}

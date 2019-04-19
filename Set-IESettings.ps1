@@ -5,12 +5,12 @@
     .DESCRIPTION
     Set-IESettings.ps1 is a script designed to configure the Internet Explorer Trusted Site settings for all 
     computer users of the workstation so that it may interact with a web service that required these settings.
-    
+
     .LINK
     https://support.microsoft.com/en-us/help/182569/internet-explorer-security-zones-registry-entries-for-advanced-users
 
     .NOTES
-    
+
 
 #>
 
@@ -61,7 +61,7 @@ Process {
           Column    = $e.InvocationInfo.OffsetInLine
 
         }
-        
+
         # output information. Post-process collected info, and log info (optional)
         Write-output -InputObject $info
 
@@ -70,7 +70,7 @@ Process {
 }
 
 End {
-    
+
     #Reset working directory back to home drive
     #Set-Location -Path $env:HOMEDRIVE
 

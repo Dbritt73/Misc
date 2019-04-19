@@ -24,7 +24,7 @@ Function Get-IPInformation {
 
     [CmdletBinding()]
     Param (
-        
+
         [Parameter( ValueFromPipeline = $true,
                     ValueFromPipelineByPropertyName = $true)]
         [String[]]$IPAddress
@@ -36,23 +36,23 @@ Function Get-IPInformation {
     Process {
 
         if ($PSBoundParameters.ContainsKey('IPAddress')) {
-            
+
             foreach ($IP in $IPAddress) {
 
                 Try {
-                    
+
                     $IPInfo = Invoke-RestMethod -Uri "Https://ipinfo.io/$IP/json"
                     #$IPv6 = Invoke-RestMethod -uri 'http://ipv6.icanhazip.com'
 
                     $Props = [ordered]@{
 
-                        'IPv4' = $IPInfo.ip;
-                        #'IPv6' = $IPv6.Trim();
-                        'Hostname' = $IPInfo.Hostname;
-                        'City' = $IPInfo.City;
-                        'Region' = $IPInfo.Region;
-                        'Country' = $IPInfo.Country;
-                        'Location' = $IPInfo.loc;
+                        'IPv4'         = $IPInfo.ip;
+                        #'IPv6'        = $IPv6.Trim();
+                        'Hostname'     = $IPInfo.Hostname;
+                        'City'         = $IPInfo.City;
+                        'Region'       = $IPInfo.Region;
+                        'Country'      = $IPInfo.Country;
+                        'Location'     = $IPInfo.loc;
                         'Organization' = $IPInfo.Org
 
                     }
@@ -60,26 +60,26 @@ Function Get-IPInformation {
                     $Object = New-Object -TypeName psobject -Property $props
                     $Object.PSObject.TypeNames.Insert(0,'Net.IPInformation')
                     Write-Output -InputObject $Object
-                    
+
                 } Catch {
-                    
+
                     # get error record
                     [Management.Automation.ErrorRecord]$e = $_
 
                     # retrieve information about runtime error
                     $info = [PSCustomObject]@{
 
-                      Exception = $e.Exception.Message
-                      Reason    = $e.CategoryInfo.Reason
-                      Target    = $e.CategoryInfo.TargetName
-                      Script    = $e.InvocationInfo.ScriptName
-                      Line      = $e.InvocationInfo.ScriptLineNumber
-                      Column    = $e.InvocationInfo.OffsetInLine
+                        Exception = $e.Exception.Message
+                        Reason    = $e.CategoryInfo.Reason
+                        Target    = $e.CategoryInfo.TargetName
+                        Script    = $e.InvocationInfo.ScriptName
+                        Line      = $e.InvocationInfo.ScriptLineNumber
+                        Column    = $e.InvocationInfo.OffsetInLine
 
                     }
-                    
+
                     # output information. Post-process collected info, and log info (optional)
-                    $info
+                    Write-Output -InputObject $info
                 }
 
             }
@@ -90,20 +90,20 @@ Function Get-IPInformation {
 
                 $IPInfo = Invoke-RestMethod -Uri 'https://ipinfo.io/json'
                 $IPv6 = Invoke-RestMethod -uri 'http://ipv6.icanhazip.com'
-    
+
                 $Props = [ordered]@{
-    
-                    'IPv4' = $IPInfo.ip;
-                    'IPv6' = $IPv6.Trim();
-                    'Hostname' = $IPInfo.Hostname;
-                    'City' = $IPInfo.City;
-                    'Region' = $IPInfo.Region;
-                    'Country' = $IPInfo.Country;
-                    'Location' = $IPInfo.loc;
+
+                    'IPv4'         = $IPInfo.ip
+                    'IPv6'         = $IPv6.Trim()
+                    'Hostname'     = $IPInfo.Hostname
+                    'City'         = $IPInfo.City
+                    'Region'       = $IPInfo.Region
+                    'Country'      = $IPInfo.Country
+                    'Location'     = $IPInfo.loc
                     'Organization' = $IPInfo.Org
-    
+
                 }
-    
+
                 $Object = New-Object -TypeName psobject -Property $props
                 $Object.PSObject.TypeNames.Insert(0,'Net.IPInformation')
                 Write-Output -InputObject $Object
@@ -116,17 +116,18 @@ Function Get-IPInformation {
                 # retrieve information about runtime error
                 $info = [PSCustomObject]@{
 
-                  Exception = $e.Exception.Message
-                  Reason    = $e.CategoryInfo.Reason
-                  Target    = $e.CategoryInfo.TargetName
-                  Script    = $e.InvocationInfo.ScriptName
-                  Line      = $e.InvocationInfo.ScriptLineNumber
-                  Column    = $e.InvocationInfo.OffsetInLine
+                    Exception = $e.Exception.Message
+                    Reason    = $e.CategoryInfo.Reason
+                    Target    = $e.CategoryInfo.TargetName
+                    Script    = $e.InvocationInfo.ScriptName
+                    Line      = $e.InvocationInfo.ScriptLineNumber
+                    Column    = $e.InvocationInfo.OffsetInLine
 
                 }
-                
+
                 # output information. Post-process collected info, and log info (optional)
-                $info
+                Write-Output -InputObject $info
+
             }
 
         }
