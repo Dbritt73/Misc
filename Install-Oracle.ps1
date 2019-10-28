@@ -42,7 +42,7 @@ Param ()
             'tnsnames.ora'
 
         )
-        Start-Process -FilePath "$env:windir\system32\robocopy.exe" -ArgumentList $ArgumentList -Wait
+        Start-Process -FilePath "$env:windir\system32\robocopy.exe" -ArgumentList $ArgumentList -Wait -NoNewWindow
 
         #Add System DSN Entries for ODBC Connections
         $Connections = @('Connection1', 'Connection2', 'Connection3', 'Connection4', 'Connection15')

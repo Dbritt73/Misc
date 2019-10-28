@@ -22,7 +22,7 @@ Function Invoke-HyperVFix {
                     Write-Verbose -Message "$($Output[4])" -Verbose
                     Write-Verbose -Message "$($Output[5])" -Verbose
 
-                    $props = @{
+                    $props = [Ordered]@{
 
                         'Status'       = 'Success'
                         'NeedsReboot'  = 'True'

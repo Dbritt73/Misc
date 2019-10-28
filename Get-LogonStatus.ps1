@@ -13,9 +13,11 @@ Function Get-LogonStatus {
     #>
     [Cmdletbinding()]
     Param (
+
         [parameter( ValueFromPipeline = $true,
                     ValueFromPipelineByPropertyName = $true)]
         [String[]]$Computername
+
     )
 
     Begin {}
@@ -28,9 +30,9 @@ Function Get-LogonStatus {
 
                 $wmi = @{
 
-                    'Class' = 'Win32_ComputerSystem';
-                    'ComputerName' = $computer;
-                    'ErrorAction' = 'Stop'
+                    'Class'        = 'Win32_ComputerSystem'
+                    'ComputerName' = $computer
+                    'ErrorAction'  = 'Stop'
 
                 }
 
@@ -42,9 +44,9 @@ Function Get-LogonStatus {
                 #Write-output "Unable to Connect to $computer"
                 $LogonStatus = @{
 
-                    'ComputerName' = $computer;
-                    'Status' = 'Inaccessible';
-                    'User' = 'NA'
+                    'ComputerName' = $computer
+                    'Status'       = 'Inaccessible'
+                    'User'         = 'NA'
 
                 }
 
@@ -57,15 +59,15 @@ Function Get-LogonStatus {
 
             Try {
 
-                $logonUI = Get-Process logonui -ComputerName $Computer -ErrorAction 'Stop'
+                $logonUI = Get-Process 'logonui' -ComputerName $Computer -ErrorAction 'Stop'
 
                 if (($logonUI) -and ($user.username)) {
 
                     $LogonStatus = @{
 
-                        'ComputerName' = $computer;
-                        'Status' = 'Locked';
-                        'User' = $User.Username
+                        'ComputerName' = $computer
+                        'Status'       = 'Locked'
+                        'User'         = $User.Username
 
                     }
 
@@ -75,13 +77,14 @@ Function Get-LogonStatus {
 
                 }
 
-                if (($logonUI) -and ($user.username -eq $Null) ) {
+                #if (($logonUI) -and ($user.username -eq $Null) ) {
+                if (($logonUI) -and ($Null -eq $user.username) ) {
 
                     $LogonStatus = @{
 
-                        'ComputerName' = $computer;
-                        'Status' = 'NoLogon';
-                        'User' =  'None'
+                        'ComputerName' = $computer
+                        'Status'       = 'NoLogon'
+                        'User'         = 'None'
 
                     }
 
@@ -93,13 +96,14 @@ Function Get-LogonStatus {
 
             } Catch {
 
-                if ($user.username -ne $null) {
+                #if ($user.username -ne $null) {
+                if ($null -ne $user.username) {
 
                     $LogonStatus = @{
 
-                        'ComputerName' = $computer;
-                        'Status' = 'ActiveLogon';
-                        'User' =  $User.username
+                        'ComputerName' = $computer
+                        'Status'       = 'ActiveLogon'
+                        'User'         = $User.username
 
                     }
 
